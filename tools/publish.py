@@ -34,13 +34,17 @@ class Publisher:
     def prepare(self):
         if self.git('branch', '--show-current') != 'main':
             raise RuntimeError('请先切换到 main 分支')
-        if self.git('status', '--porcelain'):
-            raise RuntimeError('项目有未提交改动，请先处理；本工具不会代为上传程序或其他文件')
+        if self.git('diff', '--cached', '--name-only'):
+            raise RuntimeError('暂存区已有内容，请先处理后重试')
+        if self.git('status', '--porcelain', '--', '.', ':(exclude)notes'):
+            raise RuntimeError('程序或其他文件有未提交改动，请先保存这些改动；笔记可以待发布')
         self.git('fetch', 'origin')
         ahead, behind = map(int, self.git('rev-list', '--left-right', '--count',
                                          'HEAD...origin/main').split())
         if ahead:
             raise RuntimeError('本地有尚未推送的提交，请先人工确认并推送，避免顺带上传其他改动')
+        if behind and self.git('status', '--porcelain'):
+            raise RuntimeError('远程有更新且本地有待发布笔记，需要先合并；笔记未被删除')
         if behind:
             self.git('merge', '--ff-only', 'origin/main')
 

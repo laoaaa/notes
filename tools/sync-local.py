@@ -16,9 +16,12 @@ try:
     publishing = '--publish' in sys.argv
     publisher = Publisher(root) if publishing else None
     if publisher:
+        print('正在检查 GitHub 连接和远程更新……', flush=True)
         publisher.prepare()
+        print('检查通过。', flush=True)
     account = input('备忘录账户 [iCloud]：').strip() or 'iCloud'
     folder = input('专用文件夹（默认：blog）：').strip() or 'blog'
+    print('正在读取指定备忘录文件夹……', flush=True)
     sync.preview(sync.capture(account, folder))
     manifest = json.loads((sync.STAGE / 'manifest.json').read_text())
     print(f'已生成 {len(manifest)} 条笔记。预览目录：{sync.STAGE}')
@@ -30,6 +33,7 @@ try:
     sync.apply()
     subprocess.run([sys.executable, 'build.py'], cwd=root, check=True)
     if publisher:
+        print('正在提交笔记并推送，请等待……', flush=True)
         publisher.publish()
         print('已推送，GitHub 正在构建网站：https://laoaaa.github.io/prprp/')
     else:

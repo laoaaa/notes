@@ -20,7 +20,10 @@ class PublicationTests(unittest.TestCase):
             run('remote','add','origin',str(remote),cwd=local)
             run('push','-u','origin','main',cwd=local)
             p=Publisher(local,['git']);p.prepare()
-            (local/'notes/a.md').write_text('two');p.publish()
+            (local/'notes/a.md').write_text('two')
+            (local/'notes/new.md').write_text('new')
+            p.prepare()  # Pending tracked and untracked notes must be allowed.
+            p.publish()
             self.assertEqual(p.git('rev-parse','HEAD'),p.git('rev-parse','origin/main'))
             (local/'unrelated.txt').write_text('private')
             with self.assertRaises(RuntimeError):p.prepare()
