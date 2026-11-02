@@ -24,10 +24,10 @@ try:
     print('正在读取指定备忘录文件夹……', flush=True)
     sync.preview(sync.capture(account, folder))
     manifest = json.loads((sync.STAGE / 'manifest.json').read_text())
-    print(f'已生成 {len(manifest)} 条笔记。预览目录：{sync.STAGE}')
-    subprocess.run(['/usr/bin/open', str(sync.STAGE)], check=True)
+    print(f'已生成 {len(manifest)} 条笔记。不会自动打开文件夹。')
+    print(f'需要查看预览时，可手动打开：{sync.STAGE}')
     action = '发布' if publishing else '写入'
-    if input(f'检查预览后，输入“{action}”继续；回车取消：').strip() != action:
+    if input(f'确认后，输入“{action}”继续；回车取消：').strip() != action:
         print('已取消，未改动博客。')
         sys.exit(0)
     sync.apply()
