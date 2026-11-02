@@ -1,6 +1,6 @@
 # 独立文字博客
 
-本项目的页面、样式、生成器与部署配置独立编写，不包含 Moire 源码、主题、素材或依赖。tools 中复用的是本次会话自行编写的本地同步工具。仅使用 Python 标准库，构建时无需安装 npm 或第三方 Python 包。GitHub Actions 本身仍使用 GitHub 官方 actions。
+个人文字博客：从指定的苹果备忘录文件夹生成本地预览，确认后写入笔记，再由你提交并推送到 GitHub Pages。页面和生成器独立编写，只使用 Python 标准库。部署使用 GitHub 官方 Actions。
 
 ## 日常使用
 
@@ -23,7 +23,7 @@ site.json 修改标题与描述。notes/example.md 是虚构示例，真实笔�
 
 ## GitHub Pages
 
-本目录才是新项目仓库根目录，与旧 app 完全分开；本项目尚未初始化 Git、绑定仓库或推送。用户重新创建仓库后，再按新仓库地址绑定，不使用旧项目的 Git 设置。
+当前目录就是仓库根目录，已绑定 https://github.com/laoaaa/prprp.git ，main 分支推送后自动部署。
 
 提交源码、notes、tools、site.json、build.py 和隐藏的 .github 目录。dist、.notes-staging、缓存和环境文件不提交。Settings → Pages → Source 选择 GitHub Actions，推送 main 后自动构建。页面没有绝对资源路径，适用于仓库子路径。
 
@@ -32,3 +32,16 @@ site.json 修改标题与描述。notes/example.md 是虚构示例，真实笔�
 .notes-staging 包含本地预览、旧文件备份，必须保留在忽略列表，不强制上传。确认 notes 内容允许公开后再提交。被推送的笔记可能留存在 Git 历史中。Notes 自动化权限是应用级权限，文件夹限制由代码执行，并非系统级隔离。
 
 本地覆盖采用原子文件替换，但批量更新不是整体事务；出现部分失败可从 .notes-staging/backup-* 恢复旧文件。
+
+
+## 推送更新
+
+在当前目录打开终端，检查笔记可以公开后执行：
+
+```bash
+git add notes
+git commit -m "Update notes"
+git -c http.proxy=http://127.0.0.1:15236 push
+```
+
+代理端口为本机当前配置，代理软件调整后需相应更新。目录已整理到项目根目录，不再进入任何子项目目录。页面地址：https://laoaaa.github.io/prprp/ 。当前未启用定时同步或自动推送。
