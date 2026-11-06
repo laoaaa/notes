@@ -12,7 +12,8 @@ class PublicationTests(unittest.TestCase):
                 return subprocess.run(['git', *args], cwd=cwd, check=True,
                                       capture_output=True, text=True)
             run('init', '--bare', str(remote))
-            run('init', '-b', 'main', str(local))
+            run('init', str(local))
+            run('symbolic-ref', 'HEAD', 'refs/heads/main', cwd=local)
             run('config','user.name','Test',cwd=local)
             run('config','user.email','test@example.invalid',cwd=local)
             (local/'notes').mkdir();(local/'notes/a.md').write_text('one')

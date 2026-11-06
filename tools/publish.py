@@ -32,7 +32,7 @@ class Publisher:
         return result.stdout.strip()
 
     def prepare(self):
-        if self.git('branch', '--show-current') != 'main':
+        if self.git('rev-parse', '--abbrev-ref', 'HEAD') != 'main':
             raise RuntimeError('请先切换到 main 分支')
         if self.git('diff', '--cached', '--name-only'):
             raise RuntimeError('暂存区已有内容，请先处理后重试')
